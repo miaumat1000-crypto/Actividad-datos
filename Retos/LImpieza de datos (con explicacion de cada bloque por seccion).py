@@ -1,6 +1,12 @@
 # ==========================================
 # 1. IMPORTACIÓN DE LIBRERÍAS
+#  Se importan las libreiras de nombre:
+#  Pandas para maipulacion de datos
+#  Numpy para operaciones matematicas complejas
+#  Matplotlib.pyplot para el tema de graficas
+#  Matplobit para ajustar los parametros de render
 # ==========================================
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,8 +14,13 @@ import matplotlib
 
 # ==========================================
 # 2. CARGA Y EXPLORACIÓN INICIAL
+#  Lee el archivo y devuelve la siguiente informacion:
+#  Forma del dataset (proporcion)
+#  Registro de los primeros datos
+#  Informacion general
+#  Valores nulos y su porcentaje
 # ==========================================
-# Cargamos el dataset (asegúrate de tener el archivo CSV en la misma carpeta)
+
 df = pd.read_csv("TikTok_songs_2020.csv")
 
 print("Forma del dataset:", df.shape)
@@ -31,6 +42,9 @@ print("¿Hay nulos en el dataset?", df.isnull().values.any())
 
 # ==========================================
 # 3. LIMPIEZA DE DATOS
+#   Cuenta las filas repetidas y las elimina 
+#   Elimina las columnas time_signature y key
+#   Muesta una lista con las columnas restantes 
 # ==========================================
 print("\nDuplicados iniciales:", df.duplicated().sum())
 
@@ -47,6 +61,16 @@ print("Columnas restantes:", df.columns.tolist())
 
 # ==========================================
 # 4. INGENIERÍA DE CARACTERÍSTICAS
+#   Crea la columna duration_min convirtiendo los milisegundos (duration_ms) a segundos (dividido 1000) y a minutos (dividido 60), redondeando el resultado a 2 decimales con .round(2).
+#   Muestra estadísticas descriptivas de la duración (media, mínimo, máximo, cuartiles)
+#   Encuentran el índice de la canción con menor y mayor duración respectivamente, para que df.loc[...] traiga el valor de la columna track_name.
+#   Itera sobre la lista de atributos de audio.
+#   Utiliza las funciones de NumPy para calcular promedio, mediana, desviación estándar, valor mínimo y máximo de cada columna.
+#   Crea una copia independiente del DataFrame para trabajar la escala sin alterar el original.
+#   Escala los datos de cada columna al rango $0$ a $1$ (Normalización Min-Max). 
+#   Comprensión de listas para filtrar y mostrar únicamente las columnas normalizadas que terminan en _norm.
+#   Calcula la puntuación Z (Z-Score) indicando a cuántas desviaciones estándar está la popularidad de una canción frente al promedio.
+#   Filtra los datos atípicos u outliers cuya popularidad esté a más de 2 desviaciones estándar de distancia (positiva o negativa).
 # ==========================================
 # Crear nueva columna: duración en minutos
 df["duration_min"] = (df["duration_ms"] / 1000 / 60).round(2)
@@ -99,6 +123,10 @@ print("Menos popular:", df.loc[df["track_pop"].idxmin(), "track_name"])
 
 # ==========================================
 # 5. FILTRADO Y CONSULTAS AVANZADAS
+#   Filtra las filas donde el atributo de bailabilidad supera 0.8.
+#   Filtra el DataFrame para obtener únicamente las canciones de la artista Doja Cat.
+#   Ordena el DataFrame descendentemente por popularidad de la canción.
+#   Aplica un filtro con doble condición lógica usando el operador & (Y lógico).
 # ==========================================
 canciones_bailables = df[df["danceability"] > 0.8]
 print(f"\nCanciones muy bailables (>0.8): {len(canciones_bailables)}")
@@ -118,6 +146,19 @@ print(f"\nCanciones para la fiesta (Bailables + Energéticas): {len(fiesta)}")
 
 # ==========================================
 # 6. VISUALIZACIONES (MATPLOTLIB)
+#   Configura el fondo blanco y remueve las líneas superior y derecha del marco de las gráficas.
+#   Agrupa por artista y calcula la popularidad promedio.
+#   Genera una paleta cromática degradada de 10 tonos.
+#   Construye el gráfico de barras horizontales.
+#   Agrega la etiqueta numérica al lado de cada barra.
+#   Exporta e imágen el gráfico a disco.
+#   Agrupa los datos continuos de bailabilidad en 20 rangos para contar frecuencias.
+#   Dibuja una línea vertical discontinua para marcar el valor promedio global.
+#   Muestra la relación bidimensional entre la energía (eje X) y la valencia (eje Y).
+#   Asigna el color de cada punto según el nivel de popularidad de la canción.
+#   Inserta la barra de color de referencia lateral.
+#   Cuenta la cantidad de canciones en modo Mayor (1) y modo Menor (0).
+#   Genera el gráfico circular mostrando proporciones porcentuales formateadas con autopct="%1.1f%%".
 # ==========================================
 # Configurar estilo general
 plt.rcParams["figure.facecolor"] = "white"
